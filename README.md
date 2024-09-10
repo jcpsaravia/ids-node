@@ -68,13 +68,13 @@ Including an example of how to use your role (for instance, with variables passe
       ansible.builtin.debug:
         msg: "Tasks to run after role execution"
 ```
- 
+
 
 
 License
 -------
 
-BSD
+GNU
 
 Author Information
 ------------------
