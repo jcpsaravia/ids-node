@@ -1,0 +1,30 @@
+---
+# defaults file for ids.node_role
+
+interface_management: enp0s3
+interface_listener: enp0s7
+
+#Log Forwarders for suricata
+aggregator_primary_ip_suricata: 10.0.56.131
+aggregator_primary_port_suricata: 24224
+
+aggregator_secondary_ip_suricata: 10.0.56.132
+aggregator_secondary_port_suricata: 24224
+
+#Log Forwarders for zeek
+aggregator_primary_ip_zeek: 10.0.56.131
+aggregator_primary_port_zeek: 24224
+
+aggregator_secondary_ip_zeek: 10.0.56.132
+aggregator_secondary_port_zeek: 24224
+
+#Enabled rules:
+suricata_update_rules:
+  - et/open
+  - etnetera/aggressive
+  - malsilo/win-malware
+  - oisf/trafficid
+  - sslbl/ja3-fingerprints
+  - sslbl/ssl-fp-blacklist
+  - stamus/lateral
+  - tgreen/hunting

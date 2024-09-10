@@ -1,0 +1,10 @@
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+  - name: Initialize role without actually running it
+    ansible.builtin.include_role:
+      name: my_role
+      tasks_from: init

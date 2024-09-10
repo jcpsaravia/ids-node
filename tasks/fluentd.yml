@@ -1,0 +1,69 @@
+---
+#Installation of fluentd
+
+- name: Add required dependencies.
+  apt:
+    name:
+      - apt-transport-https
+      - gnupg2
+    state: present
+
+- name: Import Fluentd signing key
+  ansible.builtin.apt_key:
+    url: https://packages.treasuredata.com/GPG-KEY-td-agent
+    state: present
+
+- name: Add Fluentd repository for Ubuntu 22.04
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://packages.treasuredata.com/5/ubuntu/jammy/ jammy contrib"
+    state: present
+    update_cache: yes
+
+- name: Install td-agent (Fluentd)
+  ansible.builtin.apt:
+    name: td-agent
+    state: latest
+    update_cache: yes
+
+# Copy Custom fluentd.conf config file to ensure logs are written in json files.
+- name: Deploy custom fluentd.conf config file
+  template:
+    src: fluentd.conf.j2
+    dest: /etc/fluent/fluentd.conf
+    mode: 0644
+    owner: root
+    group: root
+    backup: yes
+
+# Create directory to put individual configuration files
+- name: Creates directory
+  ansible.builtin.file:
+    path: /etc/fluent/config.d
+    state: directory
+
+# Copy Custom suricata log forwarder config file.
+- name: Deploy suricata log forwarder config file
+  template:
+    src: config.d/srv-suricata.conf.j2
+    dest: /etc/fluent/config.d/srv-suricata.conf
+    mode: 0644
+    owner: root
+    group: root
+    backup: yes
+
+# Copy Custom zeek log forwarder config file.
+- name: Deploy zeek log forwarder config file
+  template:
+    src: config.d/srv-zeek.conf.j2
+    dest: /etc/fluent/config.d/srv-zeek.conf
+    mode: 0644
+    owner: root
+    group: root
+    backup: yes
+
+# Add fluentd user to zeek group so fluent can access zeek logs
+- name: Add fluentd user to access zeek logs
+  ansible.builtin.user:
+    name: _fluentd
+    groups: zeek
+    append: yes

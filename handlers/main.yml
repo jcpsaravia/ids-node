@@ -1,0 +1,15 @@
+---
+# handlers file for ids-role
+
+- name: restart fluentd
+  service: name=fluentd state=restarted
+
+- name: restart suricata
+  service: name=suricata state=restarted
+
+- name: suricata-update
+  ansible.builtin.command:
+    cmd: suricata-update
+
+- name: clean restart zeek
+  command: /opt/zeek/bin/zeekctl restart --clean

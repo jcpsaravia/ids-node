@@ -1,0 +1,38 @@
+<source>
+  @type tail
+  path /var/log/suricata/eve.json
+  pos_file /var/log/fluent/tmp/suricata.pos
+  tag suricata.raw
+  format json
+  time_format %Y-%m-%dT%H:%M:%S.%6N%z
+  time_key timestamp 
+#  <parse>
+#    @type json
+#    time_type string
+#    time_format %Y-%m-%dT%H:%M:%S.%6N%z
+#  </parse>
+</source>
+
+<filter suricata.**>
+  @type record_transformer
+  <record>
+    hostname ${hostname}
+  </record>
+</filter>
+
+
+<match suricata.**>
+  @type forward
+  <server>
+    host {{aggregator_primary_ip_suricata}}
+    port {{aggregator_primary_port_suricata}}
+  </server>
+  <server>
+    host {{aggregator_secondary_ip_suricata}}
+    port {{aggregator_secondary_port_suricata}}
+    standby
+  </server>
+  <buffer>
+    flush_interval 60s
+  </buffer>
+</match>

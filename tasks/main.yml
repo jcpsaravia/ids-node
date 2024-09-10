@@ -1,0 +1,13 @@
+---
+# tasks file for owlh_role
+# Description of the tasks:
+#   Instalation is done in the following order:
+#   1. suricata
+#   2. zeek
+#   3. fluentd
+
+-   include_tasks: suricata.yml
+-   include_tasks: zeek.yml
+-   include_tasks: fluentd.yml
+
+

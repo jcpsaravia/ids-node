@@ -1,0 +1,13 @@
+# Para ejecutar las pruebas en molecule ejecutar: 
+#   prompt> MOLECULE_DISTRO=ubuntu:focal molecule create
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Install dependencies in Ubuntu Jammy 22.04
+      ansible.builtin.raw: >
+        apt update && \
+        apt install -y --no-install-recommends python3 sudo curl 
+      when: "'ubuntu' is in lookup('ansible.builtin.env', 'MOLECULE_DISTRO')"
+      changed_when: false

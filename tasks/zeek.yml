@@ -1,0 +1,56 @@
+---
+#
+# Tasks related to installing and setting up zeek.
+#
+
+#Add Dependencies required to update Zeek repository
+- name: Ubuntu | Ensure apt-transport-https is present
+  ansible.builtin.package:
+    name: apt-transport-https
+    state: present
+  register: pkg_result
+  until: pkg_result is success
+
+# Add Zeek/Bro Repository
+- name: Opensuse repository
+  block:
+    - name: Ubuntu | Add bro repository key
+      ansible.builtin.apt_key:
+        url: >
+          https://download.opensuse.org/repositories/security:zeek/xUbuntu_22.04/Release.key
+        state: present
+      register: pkg_result
+      until: pkg_result is success
+    - name: Ubuntu | Add bro repository
+      ansible.builtin.apt_repository:
+        repo: >
+          deb http://download.opensuse.org/repositories/security:/zeek/xUbuntu_22.04/ /
+        state: present
+  
+# Installing Zeek lts(Long Term Support)
+- name: Install Zeek
+  apt: name='zeek-lts'
+
+# Copy Custom local.zeek config file to ensure logs are written in json files.
+- name: Deploy custom local.zeek config file
+  template:
+    src: local.zeek.j2
+    dest: /opt/zeek/share/zeek/site/local.zeek
+    mode: 0664
+    owner: root
+    group: zeek
+    backup: yes
+
+# Copy Custom node.cfg config file to ensure the proper interface is used.
+- name: Deploy custom node.cfg config file
+  template:
+    src: node.cfg.j2
+    dest: /opt/zeek/etc/node.cfg
+    mode: 0664
+    owner: root
+    group: zeek
+    backup: yes
+
+#Initialize Zeek via zeekctl
+- name: Deploy Zeek
+  command: /opt/zeek/bin/zeekctl deploy

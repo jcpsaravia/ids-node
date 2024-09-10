@@ -1,0 +1,161 @@
+<source>
+  @type tail
+  path /opt/zeek/logs/current/conn.log
+  pos_file /var/log/fluent/tmp/zeek-conn.pos
+  read_from_head true
+  tag zeek.conn
+  follow_inodes true
+  <parse>
+    @type json
+  </parse>
+</source>
+
+<source>
+  @type tail
+  path /opt/zeek/logs/current/dns.log
+  pos_file /var/log/fluent/tmp/zeek-dns.pos
+  read_from_head true
+  tag zeek.dns
+  follow_inodes true
+  <parse>
+    @type json
+  </parse>
+</source>
+
+<source>
+  @type tail
+  path /opt/zeek/logs/current/ftp.log
+  pos_file /var/log/fluent/tmp/zeek-ftp.pos
+  read_from_head true
+  tag zeek.ftp
+  follow_inodes true
+  <parse>
+    @type json
+  </parse>
+</source>
+
+<source>
+  @type tail
+  path /opt/zeek/logs/current/weird.log
+  pos_file /var/log/fluent/tmp/zeek-weird.pos
+  read_from_head true
+  tag zeek.weird
+  follow_inodes true
+  <parse>
+    @type json
+  </parse>
+</source>
+
+<source>
+  @type tail
+  path /opt/zeek/logs/current/http.log
+  pos_file /var/log/fluent/tmp/zeek-http.pos
+  read_from_head true
+  tag zeek.http
+  follow_inodes true
+  <parse>
+    @type json
+  </parse>
+</source>
+
+<source>
+  @type tail
+  path /opt/zeek/logs/current/ssh.log
+  pos_file /var/log/fluent/tmp/zeek-ssh.pos
+  read_from_head true
+  tag zeek.ssh
+  follow_inodes true
+  <parse>
+    @type json
+  </parse>
+</source>
+
+<source>
+  @type tail
+  path /opt/zeek/logs/current/rdp.log
+  pos_file /var/log/fluent/tmp/zeek-rdp.pos
+  read_from_head true
+  tag zeek.rdp
+  follow_inodes true
+  <parse>
+    @type json
+  </parse>
+</source>
+
+<source>
+  @type tail
+  path /opt/zeek/logs/current/ntlm.log
+  pos_file /var/log/fluent/tmp/zeek-ntlm.pos
+  read_from_head true
+  tag zeek.ntlm
+  follow_inodes true
+  <parse>
+    @type json
+  </parse>
+</source>
+
+<source>
+  @type tail
+  path /opt/zeek/logs/current/pe.log
+  pos_file /var/log/fluent/tmp/zeek-pe.pos
+  read_from_head true
+  tag zeek.pe
+  follow_inodes true
+  <parse>
+    @type json
+  </parse>
+</source>
+
+<source>
+  @type tail
+  path /opt/zeek/logs/current/files.log
+  pos_file /var/log/fluent/tmp/zeek-files.pos
+  read_from_head true
+  tag zeek.files
+  follow_inodes true
+  <parse>
+    @type json
+  </parse>
+</source>
+
+<source>
+  @type tail
+  path /opt/zeek/logs/current/capture_loss.log
+  pos_file /var/log/fluent/tmp/zeek-loss.pos
+  read_from_head true
+  tag zeek.capture_loss
+  follow_inodes true
+  <parse>
+    @type json
+  </parse>
+</source>
+
+<source>
+  @type tail
+  path /opt/zeek/logs/current/notice.log
+  pos_file /var/log/fluent/tmp/zeek-notice.pos
+  read_from_head true
+  tag zeek.notice
+  follow_inodes true
+  <parse>
+    @type json
+  </parse>
+</source>
+
+<filter zeek.**>
+  @type record_transformer
+  <record>
+    hostname ${hostname}
+  </record>
+</filter>
+
+<match zeek.**>
+  @type forward
+  <server>
+    host {{aggregator_primary_ip_zeek}}
+    port {{aggregator_primary_port_zeek}}
+  </server>
+  <buffer>
+    flush_interval 30s
+  </buffer>
+</match>

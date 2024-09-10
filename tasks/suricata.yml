@@ -1,0 +1,50 @@
+#
+# Tasks related to installing and setting up suricata.
+#
+
+
+# Installing dependencies required to install suricata
+- name: Install Suricata Dependencies
+  apt: name='software-properties-common'
+
+# Add Suricata Repository to the local machine
+#- name: Adding Suricata Repository
+#  apt_repository: repo='ppa:oisf/suricata-stable'
+
+# Installing Suricata
+- name: Install Suricata
+  apt: name='suricata'
+
+# Copy suricata configuration file to suricata installation.
+- name: Deploy Custom suricata.yaml Configuration File
+  template:
+    src: suricata.yaml.j2
+    dest: /etc/suricata/suricata.yaml
+    mode: 0640
+    owner: root
+    group: root
+    backup: yes
+  notify: restart suricata
+
+- name: Suricata-Update enable sources
+  ansible.builtin.shell:
+    creates: /var/lib/suricata/rules/suricata.rules
+    cmd: "suricata-update update-sources && suricata-update enable-source {{ item }}"
+  loop: "{{ suricata_update_rules }}"
+  notify:
+    - suricata-update
+
+# Starting and Enabling Suricata service.
+- name: Start and Enable Suricata Service
+  sysvinit:
+    name: suricata
+    state: started
+    enabled: yes
+
+# Cronjob to update suricata rules every midnight.
+- name:  Creates an entry to update suricata rules "0 0 * * * > /dev/null"
+  ansible.builtin.cron:
+    name: "update suricata rules daily cronjob"
+    minute: "0"
+    hour: "0"
+    job: "/usr/bin/suricata-update > /dev/null"
