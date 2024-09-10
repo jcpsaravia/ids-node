@@ -10,7 +10,7 @@ This role allows the deployment of the Zeek Suricata node with Fluentd Log forwa
 Requirements
 ------------
 
-Ubunto 22.04 or higher
+Ubunto 22.04
 
 Role Variables
 --------------
@@ -38,9 +38,10 @@ Example Playbook
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
+```
 #Example playbook
 - name: Install Suricata Zeek for target1
-  hosts: all
+  hosts: target1
   become: yes
     
   tasks:
@@ -66,7 +67,8 @@ Including an example of how to use your role (for instance, with variables passe
     - name: "Print a message after role execution"
       ansible.builtin.debug:
         msg: "Tasks to run after role execution"
-    
+```
+ 
 
 
 License
